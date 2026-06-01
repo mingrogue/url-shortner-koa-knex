@@ -20,13 +20,18 @@ export const createShortUrl = async (
       );
     }
 
-    results = await knex("urls").insert({
-      url: body.url,
-      id: body.id,
-      user_id: userId,
-    });
+    results = await knex("urls").insert(
+      {
+        url: body.url,
+        id: body.id,
+        user_id: userId,
+      },
+      ["*"],
+    );
   } else {
-    results = await knex("urls").insert({ url: body.url, user_id: userId });
+    results = await knex("urls").insert({ url: body.url, user_id: userId }, [
+      "*",
+    ]);
   }
 
   return results[0];
@@ -85,7 +90,7 @@ export const getUrls = async (
   limit: number = 20,
 ) => {
   return await knex("urls")
-    .where({ userId: userId })
+    .where({ user_id: userId })
     .leftJoin("visits", "urls.id", "visits.url_id")
     .select(
       ["urls.id", "urls.url", "urls.created_at"],
