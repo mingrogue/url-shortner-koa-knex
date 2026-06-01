@@ -1,12 +1,11 @@
 import Knex from "../config/knex";
+import { validateCreateShortUrl } from "./validations";
 
 export const createShortUrl = async (
   body: { url: string; id?: string },
   userId: number,
 ) => {
-  if (!body.url) {
-    throw new Error("Url is required");
-  }
+  validateCreateShortUrl(body);
 
   let results;
 
@@ -42,7 +41,7 @@ export const updateUrl = async (
   body: { url: string },
   userId: number,
 ) => {
-  if (!body.url) throw new Error("no url in the request payload");
+  validateCreateShortUrl(body);
 
   const url = await Knex("urls").where({ id }).select(["user_id"]).first();
 
