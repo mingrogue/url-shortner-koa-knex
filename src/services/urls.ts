@@ -92,10 +92,12 @@ export const getUrls = async (
   return await knex("urls")
     .where({ user_id: userId })
     .leftJoin("visits", "urls.id", "visits.url_id")
-    .select(
-      ["urls.id", "urls.url", "urls.created_at"],
+    .select([
+      "urls.id",
+      "urls.url",
+      "urls.created_at",
       knex.raw("count(visits.id) as visits_count"),
-    )
+    ])
     .limit(limit)
     .offset((page - 1) * limit)
     .groupBy("urls.id")
