@@ -1,4 +1,5 @@
 import Validator from "validatorjs";
+import httpError from "http-errors";
 
 type RequestBody = {
   [key: string]: string | number;
@@ -14,7 +15,7 @@ const validateBody = (body: RequestBody, validationSchema: Validator.Rules) => {
       aggregatedErrors.push(...error);
     });
 
-    throw new Error(aggregatedErrors.join(", "));
+    throw new httpError.BadRequest(aggregatedErrors.join(", "));
   }
 };
 
@@ -28,5 +29,19 @@ export const validateCreateShortUrl = (body: RequestBody) => {
 export const validateUpdateShortUrl = (body: RequestBody) => {
   validateBody(body, {
     url: "url|required",
+  });
+};
+
+export const validateRegister = (body: RequestBody) => {
+  validateBody(body, {
+    username: "string|required|min:4|max:20",
+    password: "string|required|min:6",
+  });
+};
+
+export const validateLogin = (body: RequestBody) => {
+  validateBody(body, {
+    username: "string|required",
+    password: "string|required",
   });
 };
